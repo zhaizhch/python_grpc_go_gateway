@@ -39,3 +39,6 @@ deploy/platform/testdata/*.dump
 
 tmp/
 
+!/docker/.env
+!/proto/validate/.gitkeep
+!/proto/validate/
