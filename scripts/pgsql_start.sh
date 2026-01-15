@@ -1,4 +1,4 @@
-source ./docker/.env
+source ./scripts/.env
 docker run --name postgres-prod \
   -e POSTGRES_USER=${DB_USER:-postgres} \
   -e POSTGRES_PASSWORD=${DB_PASSWORD} \
@@ -8,4 +8,4 @@ docker run --name postgres-prod \
   -d postgres:15
 
 sleep 1
-cat ./docker/construction_progress.sql | docker exec -i postgres-prod psql -U "$DB_USER" -d "$DB_NAME"
+cat ./scripts/construction_progress.sql | docker exec -i postgres-prod psql -U "$DB_USER" -d "$DB_NAME"

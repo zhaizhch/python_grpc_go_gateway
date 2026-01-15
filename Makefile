@@ -17,7 +17,7 @@ pbgen: ## Generate protobuf files
 
 pgsql: ## Start a local PostgreSQL instance using Docker
 	@echo -e "${INFO}starting PostgreSQL...${EINFO}"
-	sh ./docker/pgsql_start.sh
+	sh ./scripts/pgsql_start.sh
 
 clean: ## Clean generated files
 	@echo -e "${INFO}cleaning generated files...${EINFO}"
@@ -33,7 +33,7 @@ pgsql-clean: ## Stop and remove the local PostgreSQL Docker instance
 	@echo -e "${INFO}stopping PostgreSQL...${EINFO}"
 	docker rm -f postgres-prod
 
-start:
+start: pbgen pgsql-clean pgsql
 	@if [ ! -d $(PYTHON_VENV_DIR) ]; then \
 		echo -e "${INFO}initializing python venv at $(PYTHON_VENV_DIR)...${EINFO}"; \
 		mkdir -p $(dir $(PYTHON_VENV_DIR)); \

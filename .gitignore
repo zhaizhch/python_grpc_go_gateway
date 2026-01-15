@@ -9,36 +9,19 @@ output/
 /agent/
 validate/
 logs/
-playground/
 swagger/
-.pytest_cache
-.VSCodeCounter
-.marscode/
-*.go-bak
 
 #protos
 *.pb.go
 *.pb.gw.go
 *.pb.validate.go
 
-#pytest
-localfvt-pytest.xml
-__pycache__/
-
 buf.lock
 
 # Configurations
 .env
 
-# Test results
-*.out
 
-deploy/platform/testdata/*.dump
-
-.air.toml
-
-tmp/
-
-!/docker/.env
 !/proto/validate/.gitkeep
 !/proto/validate/
+!/scripts/.env
