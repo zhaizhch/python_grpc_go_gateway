@@ -8,44 +8,149 @@ option go_package = "gitlab.bjuci.io/agent-be/proto/agent/v1/constructionprogres
 import "validate/validate.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
-service ConstructionService{
-  rpc ListConstruction(ListConstructionRequest)returns(ListConstructionResponse){
-    option (google.api.http) = {
-      post : "/api/v1/construction/progress"
-      body : "*"
-    };
-  }
 
-  rpc CreateConstructionProgress(ConstructionProgress)returns(CommonResponse){
-    option (google.api.http) = {
-      post : "/api/v1/construction/create"
-      body : "*"
-    };
-  }
+// ==================== 枚举定义 ====================
+
+// 进度计划类型
+enum PlanType {
+  PLAN_TYPE_UNSPECIFIED = 0; // 未指定（禁止）
+  PLAN_TYPE_BID_MASTER = 1; // 投标版总进度计划
+  PLAN_TYPE_CONSTRUCTION_MASTER = 2; // 施工版总进度计划
+  PLAN_TYPE_CONSTRUCTION_UNIT = 3; // 施工版单位工程进度计划
 }
 
-message ListConstructionRequest{
-  int64 page = 1;
-  int64 page_size = 2;
+// 进度状态
+enum ProgressStatus {
+  PROGRESS_STATUS_UNSPECIFIED = 0; // 未指定（禁止）
+  PROGRESS_STATUS_EXTRACTING = 1; // 信息提取中
+  PROGRESS_STATUS_PENDING_CONFIRMATION = 2; // 待信息确认
+  PROGRESS_STATUS_GENERATING = 3; // 计划生成中
+  PROGRESS_STATUS_GENERATED = 4; // 计划已生成
+  PROGRESS_STATUS_FAILED = 5; // 计划生成失败
 }
 
-message ListConstructionResponse{
+// 施工图纸类型
+enum DrawingType {
+  DRAWING_TYPE_UNSPECIFIED = 0;
+  DRAWING_TYPE_ARCHITECTURAL = 1; // 建筑全专业施工图
+  DRAWING_TYPE_SEGMENTATION = 2; // 流水段划分图
+  DRAWING_TYPE_SITE_PLAN = 3; // 施工现场平面布置图
+  DRAWING_TYPE_BIM = 4; // BIM文件
+}
+
+// ==================== 数据结构 ====================
+
+// 通用文档信息
+message Document {
+  string file_path = 1; // 文件存储路径（如：/uploads/202401/xxx.pdf）
+  string file_name = 2; // 原始文件名（如：施工组织计划_v1.pdf）
+  int64 file_size = 3; // 文件大小（字节）
+}
+
+// 施工图纸（带类型）
+message ConstructionDrawing {
+  DrawingType type = 1; // 图纸类型
+  Document document = 2; // 文档详情
+}
+
+// ==================== 请求/响应消息 ====================
+
+// 创建项目进度计划请求
+message CreateConstructionProgressRequest {
+  // 项目名称
+  string name = 1 [(validate.rules).string = {min_len: 1, max_len: 200}];
+  
+  // 进度计划类型
+  PlanType plan_type = 2 [(validate.rules).enum = {not_in: [0]}];
+  
+  // 施工组织计划文档（一个或多个）
+  repeated Document construction_organization_plans = 3;
+  
+  // 工程量清单文档（一个或多个）
+  repeated Document quantity_lists = 4;
+  
+  // 施工图纸（一个或多个）
+  repeated ConstructionDrawing construction_drawings = 5;
+  
+  // 其他文档（一个或多个）
+  repeated Document other_documents = 6;
+  
+  // 创建人
+  string creator = 7;
+}
+
+// 创建项目进度计划响应
+message CreateConstructionProgressResponse {
+  string id = 1; // 项目ID
+  ProgressStatus status = 2; // 初始状态
+  google.protobuf.Timestamp created_at = 3; // 创建时间
+}
+
+// 删除项目进度计划请求
+message DeleteConstructionProgressRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+// 删除项目进度计划响应
+message DeleteConstructionProgressResponse {
+  bool success = 1; // 是否成功
+  string message = 2; // 错误信息（如果失败）
+}
+
+// 查询列表请求
+message ListConstructionRequest {
+  int64 page = 1 [(validate.rules).int64 = {gte: 1}];
+  int64 page_size = 2 [(validate.rules).int64 = {gte: 1, lte: 100}];
+  // 可选筛选条件（可扩展）
+  ProgressStatus filter_status = 3;
+  string filter_name = 4;
+}
+
+// 项目进度计划详情（用于列表展示）
+message ConstructionProgress {
+  string id = 1;
+  string name = 2;
+  PlanType plan_type = 3;
+  ProgressStatus status = 4;
+  string creator = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp completed_at = 7; // 可能为空
+}
+
+// 查询列表响应
+message ListConstructionResponse {
   repeated ConstructionProgress items = 1;
   int64 total = 2;
   int64 page = 3;
   int64 page_size = 4;
 }
 
-message ConstructionProgress{
-  string name = 1;
-  string type = 2;
-  string progress = 3;
-  string creator = 4;
-  string created_at = 5;
-  string updated_at = 6;
+
+service ConstructionService{
+    // 查询项目进度计划列表
+  rpc ListConstruction(ListConstructionRequest) returns (ListConstructionResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/construction/progress"
+      body: "*"
+    };
+  }
+
+  // 创建项目进度计划
+  rpc CreateConstructionProgress(CreateConstructionProgressRequest) returns (CreateConstructionProgressResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/construction/create"
+      body: "*"
+    };
+  }
+  
+  // 删除项目进度计划
+  rpc DeleteConstructionProgress(DeleteConstructionProgressRequest) returns (DeleteConstructionProgressResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/construction/delete"
+      body: "*"
+    };
+  }
 }
 
-message CommonResponse{
-  int64 id = 1;
-}
