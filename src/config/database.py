@@ -32,8 +32,28 @@ def init_db():
     print("数据库表创建成功！")
 
 
+from contextlib import contextmanager
+
+@contextmanager
+def session_scope():
+    """提供一个事务范围的会话上下文管理器。
+    
+    用法:
+        with session_scope() as session:
+            crud.create(session, obj)
+    """
+    session = SessionLocal()
+    try:
+        yield session
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+
 def get_db():
-    """获取数据库会话（依赖注入用）"""
+    """获取数据库会话（FastAPI/依赖注入方式用）"""
     db = SessionLocal()
     try:
         yield db

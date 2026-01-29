@@ -23,8 +23,8 @@ plugins:
     out: ./proto
     opt: paths=source_relative
   - remote: buf.build/protocolbuffers/python:v25.0
-    out: .
+    out: ./proto
   - remote: buf.build/grpc/python:v1.60.0
-    out: .
+    out: ./proto
   - remote: buf.build/grpc-ecosystem/openapiv2:v2.20.0
-    out: swagger
+    out: ./proto/swagger

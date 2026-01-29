@@ -6,22 +6,38 @@
 
 venv/
 output/
-/agent/
-validate/
 logs/
-swagger/
 
-#protos
-*.pb.go
-*.pb.gw.go
-*.pb.validate.go
+# Protos Generated Files
+proto/**/*.pb.go
+proto/**/*.pb.gw.go
+proto/**/*.pb.validate.go
+proto/**/*_pb2.py
+proto/**/*_pb2_grpc.py
+proto/swagger/
+proto/validate/
 
 buf.lock
 
-# Configurations
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.venv
 .env
-
+.venv
+bin/
+lib/
+include/
+setuptools*.zip
 
 !/proto/validate/.gitkeep
 !/proto/validate/
+
 !/scripts/.env
