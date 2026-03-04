@@ -16,6 +16,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/keepalive"
+	"google.golang.org/protobuf/encoding/protojson"
 
 	// 导入生成的代码
 	pb "gitlab.bjuci.io/agent-be/proto/agent/v1/constructionprogress"
@@ -70,8 +71,10 @@ func main() {
 	// 2. 创建gRPC网关Mux
 	gwMux := runtime.NewServeMux(
 		runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
-			MarshalOptions:   runtime.JSONPb{}.MarshalOptions,
-			UnmarshalOptions: runtime.JSONPb{}.UnmarshalOptions,
+			MarshalOptions: protojson.MarshalOptions{
+				EmitDefaultValues: true,
+			},
+			UnmarshalOptions: protojson.UnmarshalOptions{},
 		}),
 		runtime.WithErrorHandler(runtime.DefaultHTTPErrorHandler),
 	)
