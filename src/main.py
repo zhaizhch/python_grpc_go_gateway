@@ -5,7 +5,7 @@ import signal
 import sys
 
 from src.services.construction import ConstructionServer
-from src.core.interceptors import ErrorHandlingInterceptor
+from src.core.interceptors.interceptors import ErrorHandlingInterceptor
 from agent.v1.constructionprogress import construction_pb2_grpc
 
 def serve():

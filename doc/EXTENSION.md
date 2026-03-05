@@ -43,7 +43,7 @@ make pbgen
 ## 4. 业务逻辑开发 (Service)
 在 `src/services/` 目录下实现 gRPC Servicer：
 1. 继承生成的 `*_pb2_grpc.*Servicer` 类。
-2. **核心原则**：必须使用 `config.database.session_scope` 上下文管理器来管理数据库事务。
+2. **核心原则**：必须使用 `src.core.database.pgsql.session_scope` 上下文管理器来管理数据库事务。
    ```python
    with session_scope() as session:
        self.crud.create(session, obj_in=data)

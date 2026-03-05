@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, DateTime, Boolean
 from sqlalchemy.sql import func, expression
 from sqlalchemy.ext.declarative import declared_attr
 from datetime import datetime
-from config.database import Base
+from src.core.database.database import Base
 from typing import Optional
 
 class BaseModel(Base):

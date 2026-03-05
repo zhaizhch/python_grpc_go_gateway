@@ -5,7 +5,7 @@ from google.protobuf import timestamp_pb2
 # 导入生成的代码
 from agent.v1.constructionprogress import construction_pb2
 from agent.v1.constructionprogress import construction_pb2_grpc
-from src.config.database import session_scope
+from src.core.database.database import session_scope
 from src.schemas.construction_progress import ConstructionProgressCreate
 import src.crud.construction_progress
 

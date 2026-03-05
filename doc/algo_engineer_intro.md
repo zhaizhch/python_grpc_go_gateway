@@ -67,8 +67,9 @@ agent-be/
 │   ├── agent/v1/       # 所有的 .proto 文件存放地，定义了接口、参数和返回格式
 │   └── swagger/        # 自动生成的 Swagger API 文档目录。它是根据 .proto 文件编译自动生成的 JSON 文件，直接提供给前端/业务方查看和联调 RESTful 接口使用，**无需也绝对不要手动修改**。
 ├── src/                # [核心] Python 业务核心代码 (你的主战场)
-│   ├── config/         # 存放配置文件和加载逻辑（如数据库账号、Redis地址等）
-│   ├── core/           # 框架核心组件：异常拦截器、安全依赖、中间件、数据库 Session 引擎
+│   ├── core/           # 框架核心组件：配置、异常拦截器、安全依赖、中间件、数据库 Session 引擎
+│   │   ├── database/     # 存放 PostgreSQL 数据库连接引擎、Session 及相关系统配置
+│   │   └── interceptors/ # gRPC 拦截器专用目录（如全局异常拦截、日志埋点等）
 │   ├── models/         # 数据库表结构定义（SQLAlchemy ORM Models）
 │   ├── crud/           # 数据操作层，基于 Models 实现底层的 增删改查 函数
 │   ├── schemas/        # Pydantic 校验模型（如果需要内部数据复杂验证）

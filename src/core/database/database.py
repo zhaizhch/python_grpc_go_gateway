@@ -2,7 +2,7 @@ from sqlalchemy import create_engine, Column, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
-from .config import db_config
+from .pgsql import db_config
 
 # 创建基类
 Base = declarative_base()

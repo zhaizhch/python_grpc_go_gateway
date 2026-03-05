@@ -12,14 +12,6 @@ import "google/protobuf/timestamp.proto";
 // ==================== 服务定义 ====================
 // ConstructionService 项目进度计划服务
 service ConstructionService{
-    // 查询项目进度计划列表
-  rpc ListConstruction(ListConstructionRequest) returns (ListConstructionResponse) {
-    option (google.api.http) = {
-      post: "/api/v1/construction/progress"
-      body: "*"
-    };
-  }
-
   // 创建项目进度计划
   rpc CreateConstructionProgress(CreateConstructionProgressRequest) returns (CreateConstructionProgressResponse) {
     option (google.api.http) = {
@@ -27,7 +19,13 @@ service ConstructionService{
       body: "*"
     };
   }
-  
+    // 查询项目进度计划列表
+  rpc ListConstruction(ListConstructionRequest) returns (ListConstructionResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/construction/progress"
+      body: "*"
+    };
+  }
   // 删除项目进度计划
   rpc DeleteConstructionProgress(DeleteConstructionProgressRequest) returns (DeleteConstructionProgressResponse) {
     option (google.api.http) = {
