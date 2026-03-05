@@ -6,7 +6,6 @@ from google.protobuf import timestamp_pb2
 from agent.v1.constructionprogress import construction_pb2
 from agent.v1.constructionprogress import construction_pb2_grpc
 from src.core.database.database import session_scope
-from src.schemas.construction_progress import ConstructionProgressCreate
 import src.crud.construction_progress
 
 class ConstructionServer(construction_pb2_grpc.ConstructionServiceServicer):
@@ -14,6 +13,28 @@ class ConstructionServer(construction_pb2_grpc.ConstructionServiceServicer):
 
     def __init__(self):
         self.crud = src.crud.construction_progress.construction_progress_crud
+
+    def CreateConstructionProgress(self, request: construction_pb2.CreateConstructionProgressRequest,
+                                   context: grpc.ServicerContext) -> construction_pb2.CreateConstructionProgressResponse:
+        """创建项目进度计划"""
+        
+        with session_scope() as session:
+            # 直接组装入库数据，设定默认初始进度
+            data = {
+                "name": request.name,
+                "type": str(request.plan_type),
+                "creator": request.creator,
+                "progress": str(construction_pb2.ProgressStatus.PROGRESS_STATUS_EXTRACTING)
+            }
+            
+            db_obj = self.crud.create(session, obj_in=data)
+            
+            res = construction_pb2.CreateConstructionProgressResponse(id=str(db_obj.id))
+            if db_obj.created_at:
+                res.created_at.FromDatetime(db_obj.created_at)
+            res.status = construction_pb2.ProgressStatus.PROGRESS_STATUS_EXTRACTING
+            
+            return res
 
     def ListConstruction(self, request: construction_pb2.ListConstructionRequest,
                         context: grpc.ServicerContext) -> construction_pb2.ListConstructionResponse:
@@ -60,30 +81,6 @@ class ConstructionServer(construction_pb2_grpc.ConstructionServiceServicer):
                 page=page,
                 page_size=page_size
             )
-
-    def CreateConstructionProgress(self, request: construction_pb2.CreateConstructionProgressRequest,
-                                   context: grpc.ServicerContext) -> construction_pb2.CreateConstructionProgressResponse:
-        """创建项目进度计划"""
-        # 利用 Pydantic 进行基础校验
-        obj_in = ConstructionProgressCreate(
-            name=request.name,
-            type=str(request.plan_type),
-            creator=request.creator
-        )
-        
-        with session_scope() as session:
-            # 默认初始进度
-            data = obj_in.model_dump()
-            data["progress"] = str(construction_pb2.ProgressStatus.PROGRESS_STATUS_EXTRACTING)
-            
-            db_obj = self.crud.create(session, obj_in=data)
-            
-            res = construction_pb2.CreateConstructionProgressResponse(id=str(db_obj.id))
-            if db_obj.created_at:
-                res.created_at.FromDatetime(db_obj.created_at)
-            res.status = construction_pb2.ProgressStatus.PROGRESS_STATUS_EXTRACTING
-            
-            return res
 
     def DeleteConstructionProgress(self, request: construction_pb2.DeleteConstructionProgressRequest,
                                    context: grpc.ServicerContext) -> construction_pb2.DeleteConstructionProgressResponse:

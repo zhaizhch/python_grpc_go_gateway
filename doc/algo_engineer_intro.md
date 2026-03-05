@@ -72,7 +72,6 @@ agent-be/
 │   │   └── interceptors/ # gRPC 拦截器专用目录（如全局异常拦截、日志埋点等）
 │   ├── models/         # 数据库表结构定义（SQLAlchemy ORM Models）
 │   ├── crud/           # 数据操作层，基于 Models 实现底层的 增删改查 函数
-│   ├── schemas/        # Pydantic 校验模型（如果需要内部数据复杂验证）
 │   ├── services/       # 业务逻辑层（算法入口）：所有具体的 AI 推理调度、业务链路组装均在此实现
 │   └── main.py         # 你的 Python gRPC 服务启动入口
 ├── doc/                # 存放项目整体和各模块的说明文档、架构设计图

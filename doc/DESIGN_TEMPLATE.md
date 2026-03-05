@@ -50,7 +50,7 @@ graph TD
 | RPC 方法 | HTTP 映射 | 功能描述 | 请求参数关键项 |
 | :--- | :--- | :--- | :--- |
 | `ListConstruction` | **POST** `/api/v1/construction/progress` | 分页列表查询 | `page`, `page_size` |
-| `CreateConstructionProgress` | **POST** `/api/v1/construction/create` | 新增施工计划 | `name`, `plan_type`, `creator` |
+| `CreateConstructionProgress` | **POST** `/api/v1/construction` | 新增施工计划 | `name`, `plan_type`, `creator` |
 | `DeleteConstructionProgress` | **DELETE** `/api/v1/construction/{id}` | 物理删除记录 | `id` (路径参数) |
 
 ---

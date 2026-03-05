@@ -51,7 +51,7 @@ make start
 ### Create Construction Progress
 
 ```bash
-curl -X POST http://localhost:8080/api/v1/construction/create \
+curl -X POST http://localhost:8080/api/v1/construction \
   -H "Content-Type: application/json" \
   -d '{
     "name": "某写字楼施工计划",
